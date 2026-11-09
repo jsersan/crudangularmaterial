@@ -1,0 +1,83 @@
+<!-- src/app/components/producto-form/producto-form.component.html -->
+<!-- Funciona como diálogo (desde el inventario) y como página (/add) -->
+<div [class.como-pagina]="!dialogRef">
+
+  @if (!dialogRef) {
+    <header class="cabecera-pagina">
+      <div>
+        <h1>Nuevo producto</h1>
+        <p>Rellena los datos y guárdalo para añadirlo al inventario.</p>
+      </div>
+    </header>
+  }
+
+  <form [formGroup]="productoForm" (ngSubmit)="onSubmit()" [class.panel]="!dialogRef" class="formulario">
+    @if (dialogRef) {
+      <h2 mat-dialog-title>{{ isEditing ? 'Editar producto' : 'Nuevo producto' }}</h2>
+    }
+
+    <div mat-dialog-content class="campos">
+
+      <!-- Nombre -->
+      <mat-form-field appearance="outline">
+        <mat-label>Nombre</mat-label>
+        <input matInput formControlName="nombre" required maxlength="100">
+        <mat-hint align="end">{{ productoForm.controls.nombre.value.length }}/100</mat-hint>
+        @if (productoForm.controls.nombre.hasError('required')) {
+          <mat-error>Escribe el nombre del producto</mat-error>
+        }
+        @if (productoForm.controls.nombre.hasError('minlength')) {
+          <mat-error>El nombre debe tener al menos 3 caracteres</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Descripción -->
+      <mat-form-field appearance="outline">
+        <mat-label>Descripción</mat-label>
+        <textarea matInput formControlName="descripcion" rows="3" required></textarea>
+        @if (productoForm.controls.descripcion.hasError('required')) {
+          <mat-error>Escribe una descripción breve</mat-error>
+        }
+      </mat-form-field>
+
+      <!-- Precio y stock en la misma fila -->
+      <div class="fila-doble">
+        <mat-form-field appearance="outline">
+          <mat-label>Precio</mat-label>
+          <input matInput type="number" formControlName="precio" min="0" step="0.01" required>
+          <span matTextSuffix>&nbsp;€</span>
+          @if (productoForm.controls.precio.hasError('required')) {
+            <mat-error>Indica el precio</mat-error>
+          }
+          @if (productoForm.controls.precio.hasError('min')) {
+            <mat-error>El precio no puede ser negativo</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Stock</mat-label>
+          <input matInput type="number" formControlName="stock" min="0" step="1" required>
+          <span matTextSuffix>&nbsp;uds.</span>
+          @if (productoForm.controls.stock.hasError('required')) {
+            <mat-error>Indica las unidades</mat-error>
+          }
+          @if (productoForm.controls.stock.hasError('min')) {
+            <mat-error>El stock no puede ser negativo</mat-error>
+          }
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div mat-dialog-actions class="acciones">
+      <!-- cancelar() cierra el diálogo o vuelve a la lista si estamos en /add -->
+      <button matButton type="button" (click)="cancelar()" [disabled]="guardando()">Cancelar</button>
+      <!-- Deshabilitado mientras el formulario no sea válido o se esté guardando -->
+      <button matButton="filled" type="submit" [disabled]="productoForm.invalid || guardando()">
+        @if (guardando()) {
+          <mat-progress-spinner mode="indeterminate" diameter="18" class="girando" />
+        }
+        {{ isEditing ? 'Guardar cambios' : 'Crear producto' }}
+      </button>
+    </div>
+  </form>
+</div>

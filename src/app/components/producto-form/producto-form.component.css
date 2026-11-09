@@ -1,0 +1,41 @@
+/* src/app/components/producto-form/producto-form.component.css */
+.campos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+/* Hueco para que la etiqueta flotante del primer campo no quede cortada
+   (más específico que el padding de .mat-mdc-dialog-content) */
+.formulario .campos { padding-top: 12px; }
+
+mat-form-field { width: 100%; }
+
+.fila-doble {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+@media (max-width: 479px) {
+  .fila-doble { grid-template-columns: 1fr; gap: 4px; }
+}
+
+.acciones { justify-content: flex-end; gap: 8px; }
+
+.girando {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+  --mat-progress-spinner-active-indicator-color: currentColor;
+}
+
+/* ---------- Ruta /add: formulario como página ---------- */
+.como-pagina {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 32px 32px 48px;
+}
+@media (max-width: 599px) { .como-pagina { padding: 20px 16px 40px; } }
+
+.como-pagina .formulario { padding: 24px 24px 16px; }
+.como-pagina .formulario .campos { padding: 0; }
+.como-pagina .acciones { display: flex; padding-top: 8px; }

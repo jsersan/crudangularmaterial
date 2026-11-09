@@ -1,0 +1,44 @@
+<!-- src/app/components/api-test/api-test.component.html -->
+<div class="pagina">
+  <header class="cabecera-pagina">
+    <div>
+      <h1>Pruebas de la API</h1>
+      <p>Página temporal para comprobar cada endpoint del backend PHP. Se elimina al terminar el Paso 6.</p>
+    </div>
+  </header>
+
+  <div class="rejilla">
+    <section class="panel grupo">
+      <h2><mat-icon>download</mat-icon> Lectura</h2>
+      <div class="botones">
+        <button matButton="tonal" type="button" (click)="listar()">Listar todo</button>
+        <button matButton="tonal" type="button" (click)="obtener(3)">Obtener ID 3</button>
+        <button matButton="outlined" type="button" (click)="obtener(999)">Obtener ID 999 (404)</button>
+        <button matButton="tonal" type="button" (click)="buscar('sony')">Buscar «sony»</button>
+        <button matButton="tonal" type="button" (click)="buscar('Mecánico')">Buscar «Mecánico»</button>
+        <button matButton="outlined" type="button" (click)="buscar('xyz')">Buscar «xyz» (vacío)</button>
+      </div>
+    </section>
+
+    <section class="panel grupo">
+      <h2><mat-icon>upload</mat-icon> Escritura</h2>
+      <p class="nota">Último ID creado: <strong class="cifra">{{ ultimoId() ?? 'ninguno' }}</strong></p>
+      <div class="botones">
+        <button matButton="tonal" type="button" (click)="crear()">Crear</button>
+        <button matButton="tonal" type="button" (click)="actualizar()" [disabled]="ultimoId() === null">Actualizar el último</button>
+        <button matButton="outlined" type="button" class="boton-peligro" (click)="borrar()" [disabled]="ultimoId() === null">Borrar el último</button>
+      </div>
+    </section>
+  </div>
+
+  <section class="panel resultado" [class.con-error]="error()">
+    <div class="titulo-resultado">
+      <mat-icon>{{ error() ? 'error_outline' : 'terminal' }}</mat-icon>
+      <h2 class="cifra">{{ titulo() }}</h2>
+    </div>
+    @if (error()) {
+      <p class="mensaje-error">{{ error() }}</p>
+    }
+    <pre>{{ resultado() | json }}</pre>
+  </section>
+</div>

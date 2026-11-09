@@ -1,0 +1,123 @@
+<!-- src/app/components/producto-detalle/producto-detalle.component.html -->
+<div class="pagina">
+
+  <a matButton routerLink="/productos" class="volver">
+    <mat-icon>arrow_back</mat-icon>
+    Inventario
+  </a>
+
+  @if (currentProducto(); as producto) {
+    <header class="cabecera-pagina">
+      <div>
+        <h1>{{ producto.nombre }}</h1>
+        <p>Producto con ID {{ producto.id }}</p>
+      </div>
+      <button matButton="outlined" type="button" class="boton-peligro" (click)="eliminarProducto()">
+        <mat-icon>delete_outline</mat-icon>
+        Eliminar
+      </button>
+    </header>
+
+    <div class="rejilla">
+      <!-- Formulario de edición -->
+      <form class="panel formulario" [formGroup]="productoForm" (ngSubmit)="actualizarProducto()">
+        <h2>Datos del producto</h2>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input matInput formControlName="nombre" required maxlength="100">
+          @if (productoForm.controls.nombre.hasError('required')) {
+            <mat-error>Escribe el nombre del producto</mat-error>
+          }
+          @if (productoForm.controls.nombre.hasError('minlength')) {
+            <mat-error>El nombre debe tener al menos 3 caracteres</mat-error>
+          }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Descripción</mat-label>
+          <textarea matInput formControlName="descripcion" rows="4" required></textarea>
+          @if (productoForm.controls.descripcion.hasError('required')) {
+            <mat-error>Escribe una descripción breve</mat-error>
+          }
+        </mat-form-field>
+
+        <div class="fila-doble">
+          <mat-form-field appearance="outline">
+            <mat-label>Precio</mat-label>
+            <input matInput type="number" formControlName="precio" min="0" step="0.01" required>
+            <span matTextSuffix>&nbsp;€</span>
+            @if (productoForm.controls.precio.hasError('min')) {
+              <mat-error>El precio no puede ser negativo</mat-error>
+            } @else if (productoForm.controls.precio.hasError('required')) {
+              <mat-error>Indica el precio</mat-error>
+            }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Stock</mat-label>
+            <input matInput type="number" formControlName="stock" min="0" step="1" required>
+            <span matTextSuffix>&nbsp;uds.</span>
+            @if (productoForm.controls.stock.hasError('min')) {
+              <mat-error>El stock no puede ser negativo</mat-error>
+            } @else if (productoForm.controls.stock.hasError('required')) {
+              <mat-error>Indica las unidades</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="acciones">
+          @if (productoForm.dirty) {
+            <span class="sin-guardar">Hay cambios sin guardar</span>
+          }
+          <button matButton type="button" (click)="descartarCambios()"
+                  [disabled]="productoForm.pristine || guardando()">Descartar</button>
+          <button matButton="filled" type="submit"
+                  [disabled]="productoForm.invalid || productoForm.pristine || guardando()">
+            @if (guardando()) {
+              <mat-progress-spinner mode="indeterminate" diameter="18" class="girando" />
+            }
+            Guardar cambios
+          </button>
+        </div>
+      </form>
+
+      <!-- Ficha lateral: se actualiza mientras se edita -->
+      <aside class="panel ficha" aria-label="Resumen del producto">
+        <dl>
+          <div>
+            <dt>Disponibilidad</dt>
+            <dd><app-estado-stock [stock]="stockActual()" [mostrarEtiqueta]="true" /></dd>
+          </div>
+          <div>
+            <dt>Valor del stock</dt>
+            <dd class="cifra destacado">{{ valorStock() | currency }}</dd>
+          </div>
+          <div>
+            <dt>Precio guardado</dt>
+            <dd class="cifra">{{ producto.precio | currency }}</dd>
+          </div>
+          @if (fechaAlta(producto.createdAt); as fecha) {
+            <div>
+              <dt>Dado de alta</dt>
+              <dd>{{ fecha | date: 'd MMM y, HH:mm' }}</dd>
+            </div>
+          }
+        </dl>
+      </aside>
+    </div>
+
+  } @else if (message()) {
+    <div class="panel estado">
+      <mat-icon>search_off</mat-icon>
+      <h1>Producto no encontrado</h1>
+      <p>{{ message() }}</p>
+      <a matButton="filled" routerLink="/productos">Volver al inventario</a>
+    </div>
+  } @else {
+    <div class="estado cargando" role="status">
+      <mat-progress-spinner mode="indeterminate" diameter="40" />
+      <p>Cargando producto…</p>
+    </div>
+  }
+</div>

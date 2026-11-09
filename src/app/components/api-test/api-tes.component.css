@@ -1,0 +1,42 @@
+/* src/app/components/api-test/api-tes.component.css */
+.rejilla {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  margin-bottom: 20px;
+}
+.grupo { padding: 20px 20px 24px; }
+.grupo h2, .titulo-resultado h2 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 14px;
+  font: var(--mat-sys-title-medium);
+  font-weight: 600;
+}
+.grupo h2 mat-icon { color: var(--mat-sys-primary); }
+.nota { margin: -6px 0 14px; color: var(--mat-sys-on-surface-variant); }
+.botones { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.resultado { padding: 20px; }
+.titulo-resultado { display: flex; align-items: center; gap: 10px; }
+.titulo-resultado h2 { margin: 0; }
+.titulo-resultado mat-icon { color: var(--mat-sys-primary); }
+.con-error .titulo-resultado mat-icon { color: var(--mat-sys-error); }
+.mensaje-error {
+  margin: 12px 0 0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: var(--mat-sys-on-error-container);
+  background: var(--mat-sys-error-container);
+}
+pre {
+  margin: 14px 0 0;
+  padding: 16px;
+  max-height: 420px;
+  overflow: auto;
+  border-radius: 10px;
+  color: var(--pcb-texto);
+  background: var(--pcb-fondo);
+  font: 0.85rem/1.5 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+}

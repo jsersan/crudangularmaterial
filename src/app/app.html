@@ -1,0 +1,63 @@
+<!-- src/app/app.html -->
+<mat-sidenav-container class="marco">
+
+  <!-- Menú lateral: fijo en escritorio, desplegable en móvil -->
+  <mat-sidenav #menu class="menu"
+               [mode]="modoMenu()"
+               [opened]="!movil()"
+               [fixedInViewport]="movil()">
+    <a class="marca" routerLink="/productos" (click)="movil() && menu.close()">
+      <span class="logo" aria-hidden="true">
+        <mat-icon>memory</mat-icon>
+      </span>
+      <span class="marca-texto">
+        <strong>CRUD Electrónica</strong>
+        <small>Angular + MySQL</small>
+      </span>
+    </a>
+
+    <mat-nav-list class="navegacion">
+      @for (enlace of enlaces; track enlace.ruta) {
+        <a mat-list-item
+           [routerLink]="enlace.ruta"
+           routerLinkActive
+           #activo="routerLinkActive"
+           [activated]="activo.isActive"
+           (click)="movil() && menu.close()">
+          <mat-icon matListItemIcon>{{ enlace.icono }}</mat-icon>
+          <span matListItemTitle>{{ enlace.texto }}</span>
+        </a>
+      }
+    </mat-nav-list>
+
+    <div class="pie-menu">
+      <button matButton type="button" class="boton-tema" (click)="tema.alternar()">
+        <mat-icon>{{ tema.oscuro() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        {{ tema.oscuro() ? 'Modo claro' : 'Modo oscuro' }}
+      </button>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="contenido">
+    <!-- Barra superior solo en móvil -->
+    @if (movil()) {
+      <mat-toolbar class="barra-movil">
+        <button matIconButton type="button" (click)="menu.toggle()" aria-label="Abrir menú">
+          <mat-icon>menu</mat-icon>
+        </button>
+        <span class="logo pequeno" aria-hidden="true"><mat-icon>memory</mat-icon></span>
+        <span class="titulo-barra">CRUD Electrónica</span>
+        <span class="espaciador"></span>
+        <button matIconButton type="button" (click)="tema.alternar()"
+                [matTooltip]="tema.oscuro() ? 'Modo claro' : 'Modo oscuro'"
+                [attr.aria-label]="tema.oscuro() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+          <mat-icon>{{ tema.oscuro() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+        </button>
+      </mat-toolbar>
+    }
+
+    <main>
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>

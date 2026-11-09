@@ -1,0 +1,86 @@
+/* src/app/app.css · Estructura general */
+.marco { height: 100%; background: transparent; }
+
+/* ---------- Menú lateral: una placa de circuito ---------- */
+.menu {
+  width: 264px;
+  border: none;
+  border-radius: 0;
+  color: var(--pcb-texto);
+  background-color: var(--pcb-fondo);
+  /* Pistas de cobre y vías dibujadas con SVG en línea */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' fill='none' stroke='%23184030' stroke-width='2'%3E%3Cpath d='M0 40h50l20 20h50l20-20h20M0 120h30l20-20h40M90 100v60M120 60v40l20 20h20'/%3E%3Ccircle cx='90' cy='100' r='4' fill='%230d2b20'/%3E%3Ccircle cx='120' cy='60' r='4' fill='%230d2b20'/%3E%3Ccircle cx='140' cy='120' r='4' fill='%230d2b20'/%3E%3C/svg%3E");
+  background-size: 160px 160px;
+}
+
+/* El contenido del menú ocupa toda la altura para dejar el pie abajo */
+.menu ::ng-deep .mat-drawer-inner-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 24px 20px 20px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.logo {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  flex: none;
+  border-radius: 10px;
+  color: var(--pcb-fondo);
+  background: var(--pcb-oro);
+  /* Patillas del «chip» */
+  box-shadow: 0 0 0 3px var(--pcb-fondo), 0 0 0 4px color-mix(in srgb, var(--pcb-oro) 55%, transparent);
+}
+.logo.pequeno { width: 32px; height: 32px; border-radius: 8px; box-shadow: none; }
+.logo.pequeno mat-icon { font-size: 20px; width: 20px; height: 20px; }
+
+.marca-texto { display: flex; flex-direction: column; line-height: 1.25; }
+.marca-texto strong { font-size: 1.05rem; font-weight: 600; letter-spacing: -0.01em; }
+.marca-texto small { color: var(--pcb-texto-suave); font-size: 0.8rem; }
+
+.navegacion {
+  padding: 8px 12px;
+  --mat-list-list-item-label-text-color: var(--pcb-texto);
+  --mat-list-list-item-leading-icon-color: var(--pcb-texto-suave);
+  --mat-list-list-item-hover-label-text-color: #fff;
+  --mat-list-list-item-hover-leading-icon-color: #fff;
+  --mat-list-list-item-focus-label-text-color: #fff;
+  --mat-list-active-indicator-color: color-mix(in srgb, var(--pcb-oro) 22%, transparent);
+  --mat-list-list-item-container-shape: 12px;
+  --mat-list-active-indicator-shape: 12px;
+}
+.navegacion a { margin-bottom: 2px; }
+
+/* Enlace activo: icono dorado, como un pad soldado */
+.navegacion a.mdc-list-item--activated mat-icon { color: var(--pcb-oro); }
+
+.pie-menu { margin-top: auto; padding: 16px 12px 20px; }
+.boton-tema {
+  width: 100%;
+  justify-content: flex-start;
+  --mat-button-text-label-text-color: var(--pcb-texto-suave);
+}
+
+/* ---------- Contenido ---------- */
+.contenido { background: transparent; }
+
+.barra-movil {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  gap: 8px;
+  color: var(--pcb-texto);
+  background: var(--pcb-fondo);
+  --mat-icon-button-icon-color: var(--pcb-texto);
+}
+.titulo-barra { font-size: 1rem; font-weight: 600; }
+.espaciador { flex: 1; }

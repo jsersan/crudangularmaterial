@@ -1,0 +1,162 @@
+// src/styles.scss · Tema de Angular Material (M3) y estilos globales
+@use '@angular/material' as mat;
+
+// ---------------------------------------------------------------------------
+// 1. Tema de Material
+//    Primario verde «máscara de soldadura» (spring-green) y terciario dorado,
+//    como las pistas y los pads de una placa de circuito.
+//    theme-type: color-scheme -> el modo claro/oscuro lo decide la propiedad
+//    CSS color-scheme del <html> (la cambia TemaService).
+// ---------------------------------------------------------------------------
+html {
+  color-scheme: light;
+
+  @include mat.theme((
+    color: (
+      primary: mat.$spring-green-palette,
+      tertiary: mat.$yellow-palette,
+      theme-type: color-scheme,
+    ),
+    typography: (
+      plain-family: ('IBM Plex Sans', Roboto, 'Helvetica Neue', Arial, sans-serif),
+      brand-family: ('IBM Plex Sans', Roboto, 'Helvetica Neue', Arial, sans-serif),
+      bold-weight: 600,
+      medium-weight: 500,
+      regular-weight: 400,
+    ),
+    density: 0,
+  ));
+
+  // Colores propios de la marca (fuera de la paleta de Material)
+  --pcb-fondo: #0d2b20;          // máscara de soldadura oscura
+  --pcb-pista: #1f4a37;          // pistas de cobre bajo la máscara
+  --pcb-oro: #d9b44a;            // pads dorados
+  --pcb-texto: #e3efe8;
+  --pcb-texto-suave: #9fbcae;
+
+  // LEDs de estado de stock
+  --led-ok: #16a34a;
+  --led-bajo: #e5a000;
+  --led-agotado: #dc2626;
+
+  // Botones e iconos de peligro (Eliminar) con el color de error del tema
+  .boton-peligro {
+    @include mat.button-overrides((
+      filled-container-color: var(--mat-sys-error),
+      filled-label-text-color: var(--mat-sys-on-error),
+      text-label-text-color: var(--mat-sys-error),
+      outlined-label-text-color: var(--mat-sys-error),
+    ));
+    @include mat.icon-button-overrides((
+      icon-color: var(--mat-sys-error),
+    ));
+  }
+}
+
+html.tema-oscuro {
+  color-scheme: dark;
+
+  // El tono 80 de spring-green es casi fosforito: en oscuro se usa uno más sereno
+  @include mat.theme-overrides((
+    primary: #7ed8a2,
+    on-primary: #00391a,
+    primary-container: #1d5138,
+    on-primary-container: #b6f2cc,
+  ));
+}
+
+// ---------------------------------------------------------------------------
+// 2. Base
+// ---------------------------------------------------------------------------
+html, body { height: 100%; }
+
+body {
+  margin: 0;
+  font: var(--mat-sys-body-medium);
+  background: var(--mat-sys-surface-container-low);
+  color: var(--mat-sys-on-surface);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--mat-sys-primary); }
+
+:focus-visible {
+  outline: 2px solid var(--mat-sys-primary);
+  outline-offset: 2px;
+}
+
+// Cifras alineadas en tablas y resúmenes
+.cifra { font-variant-numeric: tabular-nums; }
+
+// Contenedor de página (sustituye a .container de Bootstrap)
+.pagina {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 32px 32px 48px;
+  box-sizing: border-box;
+
+  @media (max-width: 599px) { padding: 20px 16px 40px; }
+}
+
+// Cabecera de página: título a la izquierda, acción principal a la derecha
+.cabecera-pagina {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+
+  h1 {
+    margin: 0;
+    font: var(--mat-sys-headline-medium);
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  p {
+    margin: 4px 0 0;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}
+
+// Panel: superficie elevada para tablas y formularios
+.panel {
+  background: var(--mat-sys-surface-container-lowest);
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+// ---------------------------------------------------------------------------
+// 3. Notificaciones (MatSnackBar con panelClass)
+// ---------------------------------------------------------------------------
+.aviso-ok {
+  @include mat.snack-bar-overrides((
+    container-color: var(--pcb-fondo),
+    supporting-text-color: var(--pcb-texto),
+    button-color: var(--pcb-oro),
+  ));
+}
+
+.aviso-error {
+  @include mat.snack-bar-overrides((
+    container-color: var(--mat-sys-error-container),
+    supporting-text-color: var(--mat-sys-on-error-container),
+    button-color: var(--mat-sys-on-error-container),
+  ));
+}
+
+// Diálogos con esquinas algo menos redondeadas que el valor por defecto de M3
+.dialogo-app {
+  @include mat.dialog-overrides((
+    container-shape: 20px,
+  ));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

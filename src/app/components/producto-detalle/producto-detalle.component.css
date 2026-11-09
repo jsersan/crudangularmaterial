@@ -1,0 +1,72 @@
+/* src/app/components/producto-detalle/producto-detalle.component.css */
+.volver { margin: -8px 0 12px -12px; }
+
+.rejilla {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 300px;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 899px) {
+  .rejilla { grid-template-columns: 1fr; }
+  .ficha { order: -1; }
+}
+
+/* ---------- Formulario ---------- */
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 24px 24px 20px;
+}
+.formulario h2 { margin: 0 0 16px; font: var(--mat-sys-title-medium); font-weight: 600; }
+mat-form-field { width: 100%; }
+
+.fila-doble { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 479px) { .fila-doble { grid-template-columns: 1fr; gap: 4px; } }
+
+.acciones {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  padding-top: 8px;
+}
+.sin-guardar {
+  margin-right: auto;
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-small);
+}
+.girando {
+  display: inline-block;
+  margin-right: 8px;
+  vertical-align: middle;
+  --mat-progress-spinner-active-indicator-color: currentColor;
+}
+
+/* ---------- Ficha lateral ---------- */
+.ficha { padding: 8px 20px; }
+.ficha dl { margin: 0; }
+.ficha dl > div {
+  padding: 14px 0;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+.ficha dl > div:first-child { border-top: none; }
+.ficha dt { color: var(--mat-sys-on-surface-variant); font: var(--mat-sys-body-small); margin-bottom: 4px; }
+.ficha dd { margin: 0; font-weight: 500; }
+.ficha .destacado { font-size: 1.5rem; font-weight: 600; letter-spacing: -0.02em; }
+
+/* ---------- Estados: no encontrado / cargando ---------- */
+.estado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 56px 24px;
+  text-align: center;
+}
+.estado mat-icon { width: 48px; height: 48px; font-size: 48px; color: var(--mat-sys-outline); }
+.estado h1 { margin: 8px 0 0; font: var(--mat-sys-title-large); }
+.estado p { margin: 0 0 12px; color: var(--mat-sys-on-surface-variant); max-width: 48ch; }
+.estado.cargando { color: var(--mat-sys-on-surface-variant); }

@@ -1,0 +1,159 @@
+<!-- src/app/components/productos-list/productos-list.component.html  ·  Inventario -->
+<div class="pagina">
+
+  <header class="cabecera-pagina">
+    <div>
+      <h1>Inventario</h1>
+      <p>Componentes y equipos de electrónica registrados en la base de datos.</p>
+    </div>
+    <button matButton="filled" type="button" (click)="abrirFormulario()">
+      <mat-icon>add</mat-icon>
+      Nuevo producto
+    </button>
+  </header>
+
+  <!-- Resumen del inventario visible -->
+  <section class="resumen panel" aria-label="Resumen del inventario">
+    <div class="dato">
+      <span class="valor cifra">{{ resumen().referencias }}</span>
+      <span class="nombre">productos</span>
+    </div>
+    <div class="dato">
+      <span class="valor cifra">{{ resumen().unidades | number }}</span>
+      <span class="nombre">unidades en almacén</span>
+    </div>
+    <div class="dato">
+      <span class="valor cifra">{{ resumen().valor | currency }}</span>
+      <span class="nombre">valor del stock</span>
+    </div>
+    <div class="dato" [class.alerta]="resumen().aReponer > 0">
+      <span class="valor cifra">{{ resumen().aReponer }}</span>
+      <span class="nombre">con stock bajo o agotado</span>
+    </div>
+  </section>
+
+  <section class="panel tabla-panel">
+    <!-- Barra de herramientas: buscador -->
+    <div class="herramientas">
+      <mat-form-field appearance="outline" class="buscador" subscriptSizing="dynamic">
+        <mat-icon matPrefix>search</mat-icon>
+        <mat-label>Buscar por nombre</mat-label>
+        <!-- [(ngModel)] requiere FormsModule; Enter lanza la búsqueda -->
+        <input matInput [(ngModel)]="nombreBusqueda" (keyup.enter)="buscarPorNombre()"
+               autocomplete="off" placeholder="Pulsa Intro para buscar">
+        @if (nombreBusqueda) {
+          <button matIconButton matSuffix type="button" (click)="limpiarBusqueda()" aria-label="Borrar búsqueda">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+      </mat-form-field>
+
+      @if (busquedaActiva()) {
+        <p class="filtro" role="status">
+          {{ productos().length }} {{ productos().length === 1 ? 'resultado' : 'resultados' }}
+          para «{{ busquedaActiva() }}»
+        </p>
+      }
+    </div>
+
+    <!-- Barra de progreso mientras llegan los datos -->
+    <div class="progreso">
+      @if (cargando()) {
+        <mat-progress-bar mode="indeterminate" aria-label="Cargando productos" />
+      }
+    </div>
+
+    <div class="tabla-scroll">
+      <table mat-table [dataSource]="paginaActual()"
+             matSort (matSortChange)="cambiarOrden($event)"
+             [class.atenuada]="cargando()">
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-id">ID</th>
+          <td mat-cell *matCellDef="let producto" class="col-id cifra">{{ producto.id }}</td>
+        </ng-container>
+
+        <!-- Nombre con la descripción debajo; enlace a /productos/:id -->
+        <ng-container matColumnDef="nombre">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Producto</th>
+          <td mat-cell *matCellDef="let producto" class="col-nombre">
+            <a class="nombre-producto" [routerLink]="['/productos', producto.id]">{{ producto.nombre }}</a>
+            <span class="descripcion" [title]="producto.descripcion">{{ producto.descripcion }}</span>
+          </td>
+        </ng-container>
+
+        <!-- Precio con el pipe currency: usa LOCALE_ID ('es') y DEFAULT_CURRENCY_CODE ('EUR') -->
+        <ng-container matColumnDef="precio">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header arrowPosition="before" class="col-num">Precio</th>
+          <td mat-cell *matCellDef="let producto" class="col-num cifra">{{ producto.precio | currency }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="stock">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header class="col-stock">Stock</th>
+          <td mat-cell *matCellDef="let producto" class="col-stock">
+            <app-estado-stock [stock]="producto.stock" />
+          </td>
+        </ng-container>
+
+        <!-- Acciones: editar y eliminar -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef class="col-acciones"><span class="oculto">Acciones</span></th>
+          <td mat-cell *matCellDef="let producto" class="col-acciones">
+            <button matIconButton type="button" (click)="abrirFormulario(producto); $event.stopPropagation()"
+                    matTooltip="Editar" [attr.aria-label]="'Editar ' + producto.nombre">
+              <mat-icon>edit</mat-icon>
+            </button>
+            <button matIconButton type="button" class="boton-peligro"
+                    (click)="eliminarProducto(producto); $event.stopPropagation()"
+                    matTooltip="Eliminar" [attr.aria-label]="'Eliminar ' + producto.nombre">
+              <mat-icon>delete_outline</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <!-- Fila de cabecera y filas de datos (clic en la fila -> detalle) -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns()" class="fila" (click)="verDetalle(row)"></tr>
+
+        <!-- Fila que se muestra cuando no hay datos -->
+        <tr class="mat-mdc-row" *matNoDataRow>
+          <td class="mat-mdc-cell" [attr.colspan]="displayedColumns().length">
+            @if (!cargando()) {
+              <div class="vacio">
+                <mat-icon>{{ errorCarga() ? 'cloud_off' : busquedaActiva() ? 'search_off' : 'inventory_2' }}</mat-icon>
+                @if (errorCarga()) {
+                  <h2>No hay conexión con el servidor</h2>
+                  <p>Comprueba que el backend PHP está en marcha y vuelve a intentarlo.</p>
+                  <button matButton="outlined" type="button" (click)="buscarPorNombre()">
+                    <mat-icon>refresh</mat-icon> Reintentar
+                  </button>
+                } @else if (busquedaActiva()) {
+                  <h2>Ningún producto coincide con «{{ busquedaActiva() }}»</h2>
+                  <p>Prueba con otra parte del nombre o muestra todo el inventario.</p>
+                  <button matButton="outlined" type="button" (click)="limpiarBusqueda()">Ver todo el inventario</button>
+                } @else {
+                  <h2>El inventario está vacío</h2>
+                  <p>Añade el primer producto para empezar.</p>
+                  <button matButton="filled" type="button" (click)="abrirFormulario()">
+                    <mat-icon>add</mat-icon> Nuevo producto
+                  </button>
+                }
+              </div>
+            }
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <!-- Paginador controlado por los signals del componente -->
+    @if (productos().length > 0) {
+      <mat-paginator
+        [length]="productos().length"
+        [pageIndex]="pageIndex()"
+        [pageSize]="pageSize()"
+        [pageSizeOptions]="[5, 10, 25, 50]"
+        (page)="cambiarPagina($event)"
+        showFirstLastButtons />
+    }
+  </section>
+</div>

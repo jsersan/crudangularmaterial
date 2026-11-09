@@ -1,0 +1,120 @@
+/* src/app/components/productos-list/productos-lis.component.css */
+
+/* ---------- Resumen: una sola franja dividida, no cuatro tarjetas ---------- */
+.resumen {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  margin-bottom: 24px;
+}
+.dato {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  padding: 18px 24px;
+  border-left: 1px solid var(--mat-sys-outline-variant);
+}
+.dato:first-child { border-left: none; }
+.dato .valor { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.02em; line-height: 1.2; }
+.dato .nombre { color: var(--mat-sys-on-surface-variant); font: var(--mat-sys-body-small); }
+.dato.alerta .valor { color: var(--led-bajo); }
+
+@media (max-width: 859px) {
+  .resumen { grid-template-columns: repeat(2, 1fr); }
+  .dato:nth-child(3) { border-left: none; }
+  .dato:nth-child(n + 3) { border-top: 1px solid var(--mat-sys-outline-variant); }
+}
+
+/* ---------- Herramientas ---------- */
+.herramientas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 20px;
+  padding: 16px 20px;
+}
+.buscador { width: min(100%, 380px); }
+.filtro { margin: 0; color: var(--mat-sys-on-surface-variant); }
+
+.progreso { height: 4px; }
+
+/* ---------- Tabla ---------- */
+.tabla-scroll { overflow-x: auto; }
+
+table {
+  width: 100%;
+  background: transparent;
+  transition: opacity 150ms;
+  --mat-table-header-headline-color: var(--mat-sys-on-surface-variant);
+  --mat-table-row-item-outline-color: var(--mat-sys-outline-variant);
+}
+table.atenuada { opacity: 0.55; }
+
+th.mat-mdc-header-cell {
+  background: var(--mat-sys-surface-container-low);
+  font-weight: 600;
+}
+th.mat-mdc-header-cell:first-of-type,
+td.mat-mdc-cell:first-of-type { padding-left: 20px; }
+
+.fila { cursor: pointer; }
+.fila:hover { background: color-mix(in srgb, var(--mat-sys-primary) 5%, transparent); }
+
+.col-id { width: 64px; color: var(--mat-sys-on-surface-variant); }
+.col-num { text-align: right; width: 120px; }
+.col-stock { width: 110px; }
+.col-acciones { width: 104px; text-align: right; white-space: nowrap; padding-right: 12px; }
+
+.col-nombre { padding-top: 12px; padding-bottom: 12px; }
+.nombre-producto {
+  display: block;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface);
+  text-decoration: none;
+}
+.nombre-producto:hover { color: var(--mat-sys-primary); text-decoration: underline; }
+.descripcion {
+  /* Una sola línea con «…»; con white-space normal la columna puede encogerse en móvil */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
+  line-clamp: 1;
+  max-width: 52ch;
+  overflow: hidden;
+  color: var(--mat-sys-on-surface-variant);
+  font: var(--mat-sys-body-small);
+}
+
+.oculto {
+  position: absolute;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+
+/* ---------- Estado vacío / error ---------- */
+.vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 56px 24px;
+  text-align: center;
+}
+.vacio mat-icon {
+  width: 48px; height: 48px; font-size: 48px;
+  color: var(--mat-sys-outline);
+}
+.vacio h2 { margin: 8px 0 0; font: var(--mat-sys-title-medium); }
+.vacio p { margin: 0 0 12px; color: var(--mat-sys-on-surface-variant); }
+
+mat-paginator {
+  background: transparent;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+@media (max-width: 719px) {
+  th.mat-mdc-header-cell:first-of-type,
+  td.mat-mdc-cell:first-of-type { padding-left: 16px; }
+  .col-stock { width: auto; padding-left: 8px; padding-right: 0; }
+  .col-acciones { width: auto; padding-right: 4px; }
+}
